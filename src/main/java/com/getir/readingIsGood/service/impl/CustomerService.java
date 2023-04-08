@@ -38,7 +38,7 @@ public class CustomerService implements ICustomerService {
 
         if(!customer.isPresent()) {
             StringBuilder sb = new StringBuilder();
-            sb.append("There is no book with id: ").append(id);
+            sb.append("There is no customer with id: ").append(id);
             throw new ReadingIsGoodException(sb.toString());
         }
 
