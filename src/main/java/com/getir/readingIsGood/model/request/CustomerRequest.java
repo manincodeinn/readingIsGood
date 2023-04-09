@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class NewCustomerRequest {
+public class CustomerRequest {
 
     @Size(min = 5, message = "Name should have least 5 characters.")
     String name;

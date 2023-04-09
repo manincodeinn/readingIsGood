@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": 10031,\n    \"name\": \"iremnur\",\n    \"email\": \"ciyusdiary1@gmail.com\",\n    \"birthDate\": \"2016-04-12\",\n    \"address\": \"Cekmekoy Istanbul\"\n}",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"ciyusdiary2@gmail.com\",\n    \"birthDate\": \"1994-04-12\",\n    \"address\": \"Cekmekoy Istanbul\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,7 +44,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/customer/get-customer/10001",
+							"raw": "http://localhost:8181/customer/get-customer?id=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -52,8 +52,13 @@
 							"port": "8181",
 							"path": [
 								"customer",
-								"get-customer",
-								"10001"
+								"get-customer"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -71,7 +76,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Beyoğlu'nun En Güzel Abisi\",\n    \"author\": \"Ahmet Ümit\",\n    \"price\": 55.4,\n    \"stockCount\": 34\n}",
+							"raw": "{\n    \"name\": \"Patasana2\",\n    \"author\": \"Ahmet Ümit\",\n    \"price\": 55.4,\n    \"stockCount\": 85\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -99,7 +104,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/book/get-book?id=1",
+							"raw": "http://localhost:8181/book/get-book?id=2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -112,7 +117,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "2"
 								}
 							]
 						}
@@ -160,7 +165,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customerId\": 10001,\n    \"bookInfo\": [\n        {\n            \"bookId\": 1,\n            \"orderCount\": 5\n        }, {\n            \"bookId\": 2,\n            \"orderCount\": 7\n        }\n    ]\n}",
+							"raw": "{\n    \"customerId\": 10002,\n    \"bookInfo\": [\n        {\n            \"bookId\": 10001,\n            \"orderCount\": 5\n        }, {\n            \"bookId\": 2,\n            \"orderCount\": 4\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -177,6 +182,88 @@
 							"path": [
 								"order",
 								"create-new-order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8181/order/get-order?id=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8181",
+							"path": [
+								"order",
+								"get-order"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-orders-date-interval",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8181/order/get-orders-date-interval?startDateTime=2022-04-08T23:34:26.696999&endDateTime=2024-04-08T23:34:26.696999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8181",
+							"path": [
+								"order",
+								"get-orders-date-interval"
+							],
+							"query": [
+								{
+									"key": "startDateTime",
+									"value": "2022-04-08T23:34:26.696999"
+								},
+								{
+									"key": "endDateTime",
+									"value": "2024-04-08T23:34:26.696999"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-orders-by-customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8181/order/get-all-orders-by-customer?customerId=10002",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8181",
+							"path": [
+								"order",
+								"get-all-orders-by-customer"
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "10002"
+								}
 							]
 						}
 					},

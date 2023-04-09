@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class NewOrderRequest {
+public class OrderRequest {
 
     private Long customerId;
     private List<BookOrder> bookInfo;

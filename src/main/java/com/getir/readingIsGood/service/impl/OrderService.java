@@ -3,11 +3,11 @@ package com.getir.readingIsGood.service.impl;
 import com.getir.readingIsGood.entity.Book;
 import com.getir.readingIsGood.entity.Customer;
 import com.getir.readingIsGood.entity.Order;
-import com.getir.readingIsGood.model.request.BookOrder;
-import com.getir.readingIsGood.model.request.NewOrderRequest;
+import com.getir.readingIsGood.model.enums.OrderStatus;
 import com.getir.readingIsGood.model.exception.ReadingIsGoodException;
-import com.getir.readingIsGood.model.response.BookResponse;
-import com.getir.readingIsGood.model.response.CustomerResponse;
+import com.getir.readingIsGood.model.request.BookOrder;
+import com.getir.readingIsGood.model.request.OrderRequest;
+import com.getir.readingIsGood.model.response.OrderResponse;
 import com.getir.readingIsGood.repository.IOrderRepository;
 import com.getir.readingIsGood.service.IBookService;
 import com.getir.readingIsGood.service.ICustomerService;
@@ -18,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,68 +36,105 @@ public class OrderService implements IOrderService {
 
     @Transactional
     @Override
-    public Order createNewOrder(NewOrderRequest newOrderRequest) {
-        CustomerResponse customer = customerService.getCustomer(newOrderRequest.getCustomerId());
-        List<Book> bookList = new ArrayList<>();
-        double totalPrice = 0;
+    public OrderResponse createNewOrder(OrderRequest orderRequest) {
+        Customer customer = customerService.getCustomerById(orderRequest.getCustomerId());
 
-        for (BookOrder bookOrder : newOrderRequest.getBookInfo()) {
-            BookResponse book = bookService.getBook(bookOrder.getBookId());
+        List<Book> bookList = orderRequest.getBookInfo().stream()
+                .filter(bookOrder -> bookService.isBookExistAndStockEnough(bookOrder.getBookId(), bookOrder.getOrderCount()))
+                .map(bookOrder -> bookService.getBookById(bookOrder.getBookId()))
+                .toList();
 
-            //book.setStockCount(isStockEnough(book.getId(), book.getStockCount(), bookOrder.getOrderCount()));
-            //bookService.updateStockCount(book);
-
-            totalPrice += book.getPrice() * bookOrder.getOrderCount();
-            //bookList.add(book);
+        if (bookList.size() == 0) {
+            log.warn("There is no valid book in order.");
+            throw new ReadingIsGoodException("There is no valid book in order.");
         }
 
+        Map<Long, Integer> bookAndOrderCountMap = orderRequest.getBookInfo().stream()
+                .collect(Collectors.toMap(bookOrder -> bookOrder.getBookId(), bookOrder -> bookOrder.getOrderCount()));
+
+        Double totalPrice = bookList.stream()
+                .map(book -> book.getPrice() * bookAndOrderCountMap.get(book.getId()))
+                .collect(Collectors.summingDouble(Double::doubleValue));
+
+        bookList.forEach(book -> bookService.updateStockCount(book.getId(),
+                book.getStockCount() - bookAndOrderCountMap.get(book.getId())));
+
         Order order = Order.builder()
-                //.customer(customer)
-                .books(bookList)
+                .customer(customer)
                 .orderDate(LocalDateTime.now())
                 .totalPrice(totalPrice)
+                .bookOrder(bookAndOrderCountMap)
+                .status(OrderStatus.RECEIVED)
                 .build();
 
-        return orderRepository.save(order);
+        orderRepository.save(order);
+
+        log.info("New order was created. {}", order);
+
+        return OrderResponse.builder()
+                .customerId(order.getCustomer().getId())
+                .books(orderRequest.getBookInfo())
+                .totalPrice(order.getTotalPrice())
+                .orderDateTime(order.getOrderDate())
+                .status(order.getStatus())
+                .build();
     }
 
     @Override
-    public Order getOrder(Long id) {
+    public OrderResponse getOrder(Long id) {
         Optional<Order> order = orderRepository.findById(id);
 
-        if(!order.isPresent()) {
+        if (!order.isPresent()) {
             StringBuilder sb = new StringBuilder();
             sb.append("There is no order with id: ").append(id);
             throw new ReadingIsGoodException(sb.toString());
         }
 
-        return order.get();
+        List<BookOrder> bookOrders = order.get().getBookOrder().entrySet().stream()
+                .map(entry -> new BookOrder(entry.getKey(), entry.getValue())).toList();
+
+        return OrderResponse.builder()
+                .customerId(order.get().getCustomer().getId())
+                .books(bookOrders)
+                .totalPrice(order.get().getTotalPrice())
+                .orderDateTime(order.get().getOrderDate())
+                .status(order.get().getStatus())
+                .build();
     }
 
     @Override
-    public List<Order> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<OrderResponse> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         List<Order> orderList = orderRepository.findByOrderDateBetween(startDateTime, endDateTime);
 
-        if(orderList == null) {
+        if (orderList == null) {
             StringBuilder sb = new StringBuilder();
             sb.append("There is no order between ").append(startDateTime)
                     .append(" and ").append(endDateTime);
             throw new ReadingIsGoodException(sb.toString());
         }
 
-        return orderList;
+        return orderList.stream().map(order -> OrderResponse.builder()
+                .customerId(order.getCustomer().getId())
+                .books(OrderResponse.generateBookOrderListFromMap(order.getBookOrder()))
+                .totalPrice(order.getTotalPrice())
+                .orderDateTime(order.getOrderDate())
+                .status(order.getStatus())
+                .build()).toList();
     }
 
-    private int isStockEnough(Long id, int bookStockCount, int requestedStockCount) {
-        int isCountEnough = bookStockCount - requestedStockCount;
+    @Override
+    public List<OrderResponse> getAllOrdersOfTheCustomer(Long id) {
+        Customer customer = customerService.getCustomerById(id);
 
-        if (isCountEnough < 0) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("There is no stock for book that have id: ").append(id);
-            throw new ReadingIsGoodException(sb.toString());
-        }
+        List<Order> allOrdersOfTheCustomer = orderRepository.findByCustomer(customer);
 
-        return isCountEnough;
+        return allOrdersOfTheCustomer.stream().map(order -> OrderResponse.builder()
+                .customerId(order.getCustomer().getId())
+                .books(OrderResponse.generateBookOrderListFromMap(order.getBookOrder()))
+                .totalPrice(order.getTotalPrice())
+                .orderDateTime(order.getOrderDate())
+                .status(order.getStatus())
+                .build()).toList();
     }
 
 }

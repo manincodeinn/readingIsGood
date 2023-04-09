@@ -12,4 +12,7 @@ public interface IBookService {
 
     BookResponse updateStockCount(Long id, Integer stockCount);
 
+    boolean isBookExistAndStockEnough(long id, int orderedStockCount);
+
+    Book getBookById(Long id);
 }

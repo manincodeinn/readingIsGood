@@ -1,5 +1,6 @@
 package com.getir.readingIsGood.entity;
 
+import com.getir.readingIsGood.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
 @Builder
 @Data
@@ -19,14 +19,15 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
     private Customer customer;
-    @OneToMany
-    private List<Book> books;
+    @ElementCollection
+    private Map<Long, Integer> bookOrder;
     private Double totalPrice;
     @CreationTimestamp
     private LocalDateTime orderDate;
+    private OrderStatus status;
 
 }

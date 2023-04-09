@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -93,6 +94,29 @@ public class BookService implements IBookService {
                 .price(book.get().getPrice())
                 .stockCount(book.get().getStockCount())
                 .build();
+    }
+
+    @Override
+    public boolean isBookExistAndStockEnough(long id, int orderedStockCount) {
+        boolean stockEnough = false;
+        Optional<Book> book = bookRepository.findById(id);
+
+        if(book.isPresent()) {
+            stockEnough = book.get().getStockCount() >= orderedStockCount;
+        }
+
+        return book.isPresent() && stockEnough;
+    }
+
+    @Override
+    public Book getBookById(Long id) {
+        Optional<Book> book = bookRepository.findById(id);
+
+        if(!book.isPresent()) {
+            log.info("There is no book with id: {}", id);
+        }
+
+        return book.get();
     }
 
     // TODO getAllBooks with paging
