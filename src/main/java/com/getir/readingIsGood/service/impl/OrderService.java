@@ -3,9 +3,11 @@ package com.getir.readingIsGood.service.impl;
 import com.getir.readingIsGood.entity.Book;
 import com.getir.readingIsGood.entity.Customer;
 import com.getir.readingIsGood.entity.Order;
-import com.getir.readingIsGood.model.BookOrder;
-import com.getir.readingIsGood.model.OrderRequestModel;
-import com.getir.readingIsGood.model.ReadingIsGoodException;
+import com.getir.readingIsGood.model.request.BookOrder;
+import com.getir.readingIsGood.model.request.NewOrderRequest;
+import com.getir.readingIsGood.model.exception.ReadingIsGoodException;
+import com.getir.readingIsGood.model.response.BookResponse;
+import com.getir.readingIsGood.model.response.CustomerResponse;
 import com.getir.readingIsGood.repository.IOrderRepository;
 import com.getir.readingIsGood.service.IBookService;
 import com.getir.readingIsGood.service.ICustomerService;
@@ -33,23 +35,23 @@ public class OrderService implements IOrderService {
 
     @Transactional
     @Override
-    public Order createNewOrder(OrderRequestModel orderRequestModel) {
-        Customer customer = customerService.getCustomer(orderRequestModel.getCustomerId());
+    public Order createNewOrder(NewOrderRequest newOrderRequest) {
+        CustomerResponse customer = customerService.getCustomer(newOrderRequest.getCustomerId());
         List<Book> bookList = new ArrayList<>();
         double totalPrice = 0;
 
-        for (BookOrder bookOrder : orderRequestModel.getBookInfo()) {
-            Book book = bookService.getBook(bookOrder.getBookId());
+        for (BookOrder bookOrder : newOrderRequest.getBookInfo()) {
+            BookResponse book = bookService.getBook(bookOrder.getBookId());
 
-            book.setStockCount(isStockEnough(book.getId(), book.getStockCount(), bookOrder.getOrderCount()));
-            bookService.updateStockCount(book);
+            //book.setStockCount(isStockEnough(book.getId(), book.getStockCount(), bookOrder.getOrderCount()));
+            //bookService.updateStockCount(book);
 
             totalPrice += book.getPrice() * bookOrder.getOrderCount();
-            bookList.add(book);
+            //bookList.add(book);
         }
 
         Order order = Order.builder()
-                .customer(customer)
+                //.customer(customer)
                 .books(bookList)
                 .orderDate(LocalDateTime.now())
                 .totalPrice(totalPrice)

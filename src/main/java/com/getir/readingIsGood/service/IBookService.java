@@ -1,13 +1,15 @@
 package com.getir.readingIsGood.service;
 
 import com.getir.readingIsGood.entity.Book;
+import com.getir.readingIsGood.model.request.BookRequest;
+import com.getir.readingIsGood.model.response.BookResponse;
 
 public interface IBookService {
 
-    Book createNewBook(Book book);
+    BookResponse createNewBook(BookRequest bookRequest);
 
-    Book getBook(Long id);
+    BookResponse getBook(Long id);
 
-    Book updateStockCount(Book book);
+    BookResponse updateStockCount(Long id, Integer stockCount);
 
 }

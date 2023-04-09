@@ -1,14 +1,14 @@
 package com.getir.readingIsGood.service;
 
 import com.getir.readingIsGood.entity.Order;
-import com.getir.readingIsGood.model.OrderRequestModel;
+import com.getir.readingIsGood.model.request.NewOrderRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IOrderService {
 
-    Order createNewOrder(OrderRequestModel orderRequestModel);
+    Order createNewOrder(NewOrderRequest newOrderRequest);
 
     Order getOrder(Long id);
 

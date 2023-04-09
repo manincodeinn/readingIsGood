@@ -1,7 +1,7 @@
 package com.getir.readingIsGood.controller;
 
 import com.getir.readingIsGood.entity.Order;
-import com.getir.readingIsGood.model.OrderRequestModel;
+import com.getir.readingIsGood.model.request.NewOrderRequest;
 import com.getir.readingIsGood.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class OrderController {
     private IOrderService orderService;
 
     @PostMapping("/create-new-order")
-    public ResponseEntity<Order> createNewOrder(@RequestBody OrderRequestModel orderRequestModel) {
-        return new ResponseEntity<>(orderService.createNewOrder(orderRequestModel), HttpStatus.OK);
+    public ResponseEntity<Order> createNewOrder(@RequestBody NewOrderRequest newOrderRequest) {
+        return new ResponseEntity<>(orderService.createNewOrder(newOrderRequest), HttpStatus.OK);
     }
 
     @GetMapping("/get-order")

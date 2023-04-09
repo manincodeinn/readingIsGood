@@ -1,12 +1,14 @@
 package com.getir.readingIsGood.service;
 
 import com.getir.readingIsGood.entity.Customer;
+import com.getir.readingIsGood.model.request.NewCustomerRequest;
+import com.getir.readingIsGood.model.response.CustomerResponse;
 import org.springframework.beans.InvalidPropertyException;
 
 public interface ICustomerService {
 
-    Customer createNewCustomer(Customer customer) throws InvalidPropertyException;
+    CustomerResponse createNewCustomer(NewCustomerRequest newCustomerRequest) throws InvalidPropertyException;
 
-    Customer getCustomer(Long id);
+    CustomerResponse getCustomer(Long id);
 
 }

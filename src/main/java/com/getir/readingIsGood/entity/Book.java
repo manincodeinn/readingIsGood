@@ -5,8 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
 public class Book {
@@ -14,13 +20,11 @@ public class Book {
     @Id
     @GeneratedValue
     private Long id;
-    @Size(min = 2, message = "Book name should have least 2 characters.")
     private String name;
-    @Size(min = 5, message = "Author name should have least 5 characters.")
     private String author;
-    @PositiveOrZero
+    @PositiveOrZero(message = "Price must be greater than 0.")
     private Double price;
-    @PositiveOrZero
+    @PositiveOrZero(message = "Stock count must be greater than 0.")
     private Integer stockCount;
 
 }

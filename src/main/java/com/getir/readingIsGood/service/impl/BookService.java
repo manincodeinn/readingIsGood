@@ -1,7 +1,9 @@
 package com.getir.readingIsGood.service.impl;
 
 import com.getir.readingIsGood.entity.Book;
-import com.getir.readingIsGood.model.ReadingIsGoodException;
+import com.getir.readingIsGood.model.exception.ReadingIsGoodException;
+import com.getir.readingIsGood.model.request.BookRequest;
+import com.getir.readingIsGood.model.response.BookResponse;
 import com.getir.readingIsGood.repository.IBookRepository;
 import com.getir.readingIsGood.service.IBookService;
 import jakarta.transaction.Transactional;
@@ -20,22 +22,39 @@ public class BookService implements IBookService {
 
     @Transactional
     @Override
-    public Book createNewBook(Book book) {
-        Optional<Book> existBook = Optional.ofNullable(bookRepository.findByNameAndAuthor(book.getName(),
-                book.getAuthor()));
+    public BookResponse createNewBook(BookRequest bookRequest) {
+        Optional<Book> book = Optional.ofNullable(bookRepository.findByNameAndAuthor(bookRequest.getName(),
+                bookRequest.getAuthor()));
 
-        if (existBook.isPresent()) {
+        // TODO book varsa price ve stock count guncelle
+        if (book.isPresent()) {
             StringBuilder sb = new StringBuilder();
-            sb.append(book.getName()).append(" already exists. Stock count can be updated with this id: ")
-                    .append(existBook.get().getId());
+            sb.append(book.get().getName()).append(" already exists. Stock count can be updated with this id: ")
+                    .append(book.get().getId());
             throw new ReadingIsGoodException(sb.toString());
         }
 
-        return bookRepository.save(book);
+        Book newBook = Book.builder()
+                .name(bookRequest.getName())
+                .author(bookRequest.getAuthor())
+                .price(bookRequest.getPrice())
+                .stockCount(bookRequest.getStockCount())
+                .build();
+
+        bookRepository.save(newBook);
+
+        log.info("New book was created. {}", newBook);
+
+        return BookResponse.builder()
+                .name(newBook.getName())
+                .author(newBook.getAuthor())
+                .price(newBook.getPrice())
+                .stockCount(newBook.getStockCount())
+                .build();
     }
 
     @Override
-    public Book getBook(Long id) {
+    public BookResponse getBook(Long id) {
         Optional<Book> book = bookRepository.findById(id);
 
         if (!book.isPresent()) {
@@ -44,23 +63,38 @@ public class BookService implements IBookService {
             throw new ReadingIsGoodException(sb.toString());
         }
 
-        return book.get();
+        return BookResponse.builder()
+                .name(book.get().getName())
+                .author(book.get().getAuthor())
+                .price(book.get().getPrice())
+                .stockCount(book.get().getStockCount())
+                .build();
     }
 
     @Transactional
     @Override
-    public Book updateStockCount(Book book) {
-        Optional<Book> existBook = bookRepository.findById(book.getId());
+    public BookResponse updateStockCount(Long id, Integer stockCount) {
+        Optional<Book> book = bookRepository.findById(id);
 
-        if (!existBook.isPresent()) {
+        if (!book.isPresent()) {
             StringBuilder sb = new StringBuilder();
-            sb.append("There is no book with id: ").append(book.getId());
+            sb.append("There is no book with id: ").append(id);
             throw new ReadingIsGoodException(sb.toString());
         }
 
-        existBook.get().setStockCount(book.getStockCount());
+        book.get().setStockCount(stockCount);
+        bookRepository.save(book.get());
 
-        return existBook.get();
+        log.info("Stock count was updated. {}", book);
+
+        return BookResponse.builder()
+                .name(book.get().getName())
+                .author(book.get().getAuthor())
+                .price(book.get().getPrice())
+                .stockCount(book.get().getStockCount())
+                .build();
     }
+
+    // TODO getAllBooks with paging
 
 }
