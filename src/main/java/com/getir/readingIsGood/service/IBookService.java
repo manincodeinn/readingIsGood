@@ -4,15 +4,18 @@ import com.getir.readingIsGood.entity.Book;
 import com.getir.readingIsGood.model.request.BookRequest;
 import com.getir.readingIsGood.model.response.BookResponse;
 
+import java.util.Optional;
+
 public interface IBookService {
 
-    BookResponse createNewBook(BookRequest bookRequest);
+    Optional<BookResponse> createNewBook(BookRequest bookRequest);
 
-    BookResponse getBook(Long id);
+    Optional<BookResponse> getBook(Long id);
 
-    BookResponse updateStockCount(Long id, Integer stockCount);
+    Optional<BookResponse> updateStockCount(Long id, Integer stockCount);
 
     boolean isBookExistAndStockEnough(long id, int orderedStockCount);
 
-    Book getBookById(Long id);
+    Optional<Book> getBookById(Long id);
+
 }

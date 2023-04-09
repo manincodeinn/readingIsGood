@@ -2,9 +2,7 @@ package com.getir.readingIsGood.controller;
 
 import com.getir.readingIsGood.model.request.CustomerRequest;
 import com.getir.readingIsGood.model.response.CustomerResponse;
-import com.getir.readingIsGood.model.response.OrderResponse;
 import com.getir.readingIsGood.service.ICustomerService;
-import com.getir.readingIsGood.service.IOrderService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -24,13 +22,20 @@ public class CustomerController {
 
     @PostMapping("/create-new-customer")
     public ResponseEntity<CustomerResponse> createNewCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
-        log.info("New customer request was received.");
-        return new ResponseEntity<>(customerService.createNewCustomer(customerRequest), HttpStatus.OK);
+        log.info("Create new customer request was received.");
+
+        Optional<CustomerResponse> newCustomer = customerService.createNewCustomer(customerRequest);
+
+        return newCustomer.map(customerResponse -> new ResponseEntity<>(customerResponse, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("/get-customer")
     public ResponseEntity<CustomerResponse> getCustomer(@RequestParam Long id) {
-        return new ResponseEntity<>(customerService.getCustomer(id), HttpStatus.OK);
+        Optional<CustomerResponse> customer = customerService.getCustomer(id);
+
+        return customer.map(customerResponse -> new ResponseEntity<>(customerResponse, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("/test")

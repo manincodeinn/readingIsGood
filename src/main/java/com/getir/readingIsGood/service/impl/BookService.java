@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -23,100 +22,122 @@ public class BookService implements IBookService {
 
     @Transactional
     @Override
-    public BookResponse createNewBook(BookRequest bookRequest) {
-        Optional<Book> book = Optional.ofNullable(bookRepository.findByNameAndAuthor(bookRequest.getName(),
-                bookRequest.getAuthor()));
+    public Optional<BookResponse> createNewBook(BookRequest bookRequest) {
+        Book newBook = null;
 
-        // TODO book varsa price ve stock count guncelle
-        if (book.isPresent()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(book.get().getName()).append(" already exists. Stock count can be updated with this id: ")
-                    .append(book.get().getId());
-            throw new ReadingIsGoodException(sb.toString());
+        try {
+            boolean isBookExist = bookRepository.existsByNameAndAuthor(bookRequest.getName(),
+                    bookRequest.getAuthor());
+
+            // TODO book varsa price ve stock count guncelle
+            if (isBookExist) {
+                log.warn("The book already exists. Name: {}, Author: {}", bookRequest.getName(), bookRequest.getAuthor());
+                return Optional.empty();
+            }
+
+            newBook = Book.builder()
+                    .name(bookRequest.getName())
+                    .author(bookRequest.getAuthor())
+                    .price(bookRequest.getPrice())
+                    .stockCount(bookRequest.getStockCount())
+                    .build();
+
+            bookRepository.save(newBook);
+
+            log.info("New book was created. {}", newBook);
+        } catch (Exception exception) {
+            throw new ReadingIsGoodException("Error occurred while creating new book.", exception);
         }
 
-        Book newBook = Book.builder()
-                .name(bookRequest.getName())
-                .author(bookRequest.getAuthor())
-                .price(bookRequest.getPrice())
-                .stockCount(bookRequest.getStockCount())
-                .build();
-
-        bookRepository.save(newBook);
-
-        log.info("New book was created. {}", newBook);
-
-        return BookResponse.builder()
+        return Optional.ofNullable(BookResponse.builder()
                 .name(newBook.getName())
                 .author(newBook.getAuthor())
                 .price(newBook.getPrice())
                 .stockCount(newBook.getStockCount())
-                .build();
+                .build());
     }
 
     @Override
-    public BookResponse getBook(Long id) {
-        Optional<Book> book = bookRepository.findById(id);
+    public Optional<BookResponse> getBook(Long id) {
+        Optional<Book> book = null;
 
-        if (!book.isPresent()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("There is no book with id: ").append(id);
-            throw new ReadingIsGoodException(sb.toString());
+        try {
+            book = bookRepository.findById(id);
+
+            if (!book.isPresent()) {
+                log.warn("There is no book with id: {}", id);
+                return Optional.empty();
+            }
+        } catch (Exception exception) {
+            throw new ReadingIsGoodException("Error occurred while getting book.", exception);
         }
 
-        return BookResponse.builder()
+        return Optional.ofNullable(BookResponse.builder()
                 .name(book.get().getName())
                 .author(book.get().getAuthor())
                 .price(book.get().getPrice())
                 .stockCount(book.get().getStockCount())
-                .build();
+                .build());
     }
 
     @Transactional
     @Override
-    public BookResponse updateStockCount(Long id, Integer stockCount) {
-        Optional<Book> book = bookRepository.findById(id);
+    public Optional<BookResponse> updateStockCount(Long id, Integer stockCount) {
+        Optional<Book> book;
 
-        if (!book.isPresent()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("There is no book with id: ").append(id);
-            throw new ReadingIsGoodException(sb.toString());
+        try {
+            book = bookRepository.findById(id);
+
+            if (!book.isPresent()) {
+                log.warn("There is no book with id: {}", id);
+                return Optional.empty();
+            }
+
+            book.get().setStockCount(stockCount);
+            bookRepository.save(book.get());
+
+            log.info("Stock count was updated. {}", book);
+        } catch (Exception exception) {
+            throw new ReadingIsGoodException("Error occurred while updating stock count.", exception);
         }
 
-        book.get().setStockCount(stockCount);
-        bookRepository.save(book.get());
-
-        log.info("Stock count was updated. {}", book);
-
-        return BookResponse.builder()
+        return Optional.ofNullable(BookResponse.builder()
                 .name(book.get().getName())
                 .author(book.get().getAuthor())
                 .price(book.get().getPrice())
                 .stockCount(book.get().getStockCount())
-                .build();
+                .build());
     }
 
     @Override
     public boolean isBookExistAndStockEnough(long id, int orderedStockCount) {
-        boolean stockEnough = false;
-        Optional<Book> book = bookRepository.findById(id);
+        Optional<Book> book;
 
-        if(book.isPresent()) {
-            stockEnough = book.get().getStockCount() >= orderedStockCount;
+        try {
+            book = bookRepository.findById(id);
+        } catch (Exception exception) {
+            throw new ReadingIsGoodException("Error occurred while finding book by id.", exception);
         }
 
-        return book.isPresent() && stockEnough;
+        return book.isPresent() && (book.get().getStockCount() >= orderedStockCount);
     }
 
     @Override
-    public Book getBookById(Long id) {
-        Optional<Book> book = bookRepository.findById(id);
+    public Optional<Book> getBookById(Long id) {
+        Optional<Book> book;
 
-        if(!book.isPresent()) {
-            log.info("There is no book with id: {}", id);
+        try {
+            book = bookRepository.findById(id);
+
+            if (!book.isPresent()) {
+                log.info("There is no book with id: {}", id);
+                return Optional.empty();
+            }
+        } catch (Exception exception) {
+            throw new ReadingIsGoodException("Error occurred while getting book by id.", exception);
         }
 
-        return book.get();
+        return book;
     }
 
     // TODO getAllBooks with paging

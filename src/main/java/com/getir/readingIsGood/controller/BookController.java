@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Slf4j
 @RestController
 @RequestMapping("/book")
@@ -20,19 +22,30 @@ public class BookController {
 
     @PostMapping("/create-new-book")
     public ResponseEntity<BookResponse> createNewBook(@Valid @RequestBody BookRequest bookRequest) {
-        log.info("New book request was received.");
-        return new ResponseEntity<>(bookService.createNewBook(bookRequest), HttpStatus.OK);
+        log.info("Create new book request was received.");
+
+        Optional<BookResponse> newBook = bookService.createNewBook(bookRequest);
+
+        return newBook.map(bookResponse -> new ResponseEntity<>(bookResponse, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("/get-book")
     public ResponseEntity<BookResponse> getBook(Long id) {
-        return new ResponseEntity<>(bookService.getBook(id), HttpStatus.OK);
+        Optional<BookResponse> book = bookService.getBook(id);
+
+        return book.map(bookResponse -> new ResponseEntity<>(bookResponse, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
     @PutMapping("/update-stock-count")
     public ResponseEntity<BookResponse> updateStockCount(@RequestParam Long id, @RequestParam Integer stockCount) {
         log.info("Update stock count request was received.");
-        return new ResponseEntity<>(bookService.updateStockCount(id, stockCount), HttpStatus.OK);
+
+        Optional<BookResponse> bookResponse = bookService.updateStockCount(id, stockCount);
+
+        return bookResponse.map(response -> new ResponseEntity<>(response, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
 }

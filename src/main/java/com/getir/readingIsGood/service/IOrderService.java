@@ -1,20 +1,20 @@
 package com.getir.readingIsGood.service;
 
-import com.getir.readingIsGood.entity.Order;
 import com.getir.readingIsGood.model.request.OrderRequest;
 import com.getir.readingIsGood.model.response.OrderResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface IOrderService {
 
-    OrderResponse createNewOrder(OrderRequest orderRequest);
+    Optional<OrderResponse> createNewOrder(OrderRequest orderRequest);
 
-    OrderResponse getOrder(Long id);
+    Optional<OrderResponse> getOrder(Long id);
 
-    List<OrderResponse> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    Optional<List<OrderResponse>> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime);
 
-    List<OrderResponse> getAllOrdersOfTheCustomer(Long id);
+    Optional<List<OrderResponse>> getAllOrdersOfTheCustomer(Long id);
 
 }
