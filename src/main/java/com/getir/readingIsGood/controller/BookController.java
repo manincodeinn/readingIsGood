@@ -4,6 +4,8 @@ import com.getir.readingIsGood.model.request.BookRequest;
 import com.getir.readingIsGood.model.response.BookResponse;
 import com.getir.readingIsGood.service.IBookService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class BookController {
     }
 
     @GetMapping("/get-book")
-    public ResponseEntity<BookResponse> getBook(Long id) {
+    public ResponseEntity<BookResponse> getBook(@RequestParam @NotNull Long id) {
         Optional<BookResponse> book = bookService.getBook(id);
 
         return book.map(bookResponse -> new ResponseEntity<>(bookResponse, HttpStatus.OK))
@@ -39,7 +41,8 @@ public class BookController {
     }
 
     @PutMapping("/update-stock-count")
-    public ResponseEntity<BookResponse> updateStockCount(@RequestParam Long id, @RequestParam Integer stockCount) {
+    public ResponseEntity<BookResponse> updateStockCount(@RequestParam @NotNull Long id,
+                                                         @RequestParam @NotNull Integer stockCount) {
         log.info("Update stock count request was received.");
 
         Optional<BookResponse> bookResponse = bookService.updateStockCount(id, stockCount);

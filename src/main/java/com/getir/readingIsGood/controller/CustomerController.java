@@ -4,6 +4,7 @@ import com.getir.readingIsGood.model.request.CustomerRequest;
 import com.getir.readingIsGood.model.response.CustomerResponse;
 import com.getir.readingIsGood.service.ICustomerService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class CustomerController {
     }
 
     @GetMapping("/get-customer")
-    public ResponseEntity<CustomerResponse> getCustomer(@RequestParam Long id) {
+    public ResponseEntity<CustomerResponse> getCustomer(@RequestParam @NotNull Long id) {
         Optional<CustomerResponse> customer = customerService.getCustomer(id);
 
         return customer.map(customerResponse -> new ResponseEntity<>(customerResponse, HttpStatus.OK))

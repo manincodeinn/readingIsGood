@@ -44,7 +44,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/customer/get-customer?id=1",
+							"raw": "http://localhost:8181/customer/get-customer?id=10005",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -57,7 +57,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "10005"
 								}
 							]
 						}
@@ -76,7 +76,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Patasana2\",\n    \"author\": \"Ahmet Ümit\",\n    \"price\": 55.4,\n    \"stockCount\": 85\n}",
+							"raw": "{\n    \"name\": \"asdasdasdadadasd\",\n    \"author\": \"Ahmet Ümit\",\n    \"price\": 55.4,\n    \"stockCount\": 85\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -104,7 +104,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/book/get-book?id=2",
+							"raw": "http://localhost:8181/book/get-book?id=20001",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -117,7 +117,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "2"
+									"value": "20001"
 								}
 							]
 						}
@@ -127,19 +127,10 @@
 				{
 					"name": "update-stock-count",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"id\": 1,\n    \"stockCount\": 94\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "http://localhost:8181/book/update-stock-count",
+							"raw": "http://localhost:8181/book/update-stock-count?id=20001&stockCount=33",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -148,6 +139,16 @@
 							"path": [
 								"book",
 								"update-stock-count"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "20001"
+								},
+								{
+									"key": "stockCount",
+									"value": "33"
+								}
 							]
 						}
 					},
@@ -165,7 +166,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customerId\": 10002,\n    \"bookInfo\": [\n        {\n            \"bookId\": 10001,\n            \"orderCount\": 5\n        }, {\n            \"bookId\": 2,\n            \"orderCount\": 4\n        }\n    ]\n}",
+							"raw": "{\n    \"customerId\": 10005,\n    \"bookInfo\": [\n        {\n            \"bookId\": 20001,\n            \"orderCount\": 1\n        }, {\n            \"bookId\": 20004,\n            \"orderCount\": 1\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -193,7 +194,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/order/get-order?id=3",
+							"raw": "http://localhost:8181/order/get-order",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -202,12 +203,6 @@
 							"path": [
 								"order",
 								"get-order"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "3"
-								}
 							]
 						}
 					},
@@ -219,7 +214,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/order/get-orders-date-interval?startDateTime=2022-04-08T23:34:26.696999&endDateTime=2024-04-08T23:34:26.696999",
+							"raw": "http://localhost:8181/order/get-orders-date-interval?startDateTime=2022-04-08T23:34:26.696999&endDateTime=2024-04-08T23:34:26.696999&page=0",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -237,6 +232,10 @@
 								{
 									"key": "endDateTime",
 									"value": "2024-04-08T23:34:26.696999"
+								},
+								{
+									"key": "page",
+									"value": "0"
 								}
 							]
 						}
@@ -249,7 +248,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/order/get-all-orders-by-customer?customerId=10002",
+							"raw": "http://localhost:8181/order/get-all-orders-by-customer?customerId=10005&page=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -262,7 +261,42 @@
 							"query": [
 								{
 									"key": "customerId",
-									"value": "10002"
+									"value": "10005"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statistics",
+			"item": [
+				{
+					"name": "get-customer-monthly-statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8181/statistics/get-customer-monthly-statistics?id=10005",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8181",
+							"path": [
+								"statistics",
+								"get-customer-monthly-statistics"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "10005"
 								}
 							]
 						}

@@ -2,6 +2,7 @@ package com.getir.readingIsGood.service;
 
 import com.getir.readingIsGood.model.request.OrderRequest;
 import com.getir.readingIsGood.model.response.OrderResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,8 +14,8 @@ public interface IOrderService {
 
     Optional<OrderResponse> getOrder(Long id);
 
-    Optional<List<OrderResponse>> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    Optional<List<OrderResponse>> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
 
-    Optional<List<OrderResponse>> getAllOrdersOfTheCustomer(Long id);
+    Optional<List<OrderResponse>> getAllOrdersOfTheCustomer(Long id, Pageable pageable);
 
 }

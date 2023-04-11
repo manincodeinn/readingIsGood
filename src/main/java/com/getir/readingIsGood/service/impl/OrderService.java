@@ -15,6 +15,8 @@ import com.getir.readingIsGood.service.IOrderService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -52,7 +54,7 @@ public class OrderService implements IOrderService {
                     .map(bookOrder -> bookService.getBookById(bookOrder.getBookId()))
                     .toList();
 
-            boolean allBookValid = bookList.stream().anyMatch(Optional::isEmpty);
+            boolean allBookValid = bookList.stream().anyMatch(Optional::isPresent);
 
             if (bookList.size() == 0 || !allBookValid) {
                 log.warn("There is no valid book in order.");
@@ -122,11 +124,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Optional<List<OrderResponse>> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public Optional<List<OrderResponse>> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable) {
         List<Order> orderList;
 
         try {
-            orderList = orderRepository.findByOrderDateBetween(startDateTime, endDateTime);
+            orderList = orderRepository.findByOrderDateBetween(startDateTime, endDateTime, pageable);
 
             if (orderList == null || orderList.size() == 0) {
                 log.warn("There is no order between {}-{}", startDateTime, endDateTime);
@@ -146,8 +148,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Optional<List<OrderResponse>> getAllOrdersOfTheCustomer(Long id) {
-        List<Order> allOrdersOfTheCustomer;
+    public Optional<List<OrderResponse>> getAllOrdersOfTheCustomer(Long id, Pageable pageable) {
+        Page<Order> allOrdersOfTheCustomer;
 
         try {
             Optional<Customer> customer = customerService.getCustomerById(id);
@@ -157,9 +159,9 @@ public class OrderService implements IOrderService {
                 return Optional.empty();
             }
 
-            allOrdersOfTheCustomer = orderRepository.findByCustomer(customer.get());
+            allOrdersOfTheCustomer = orderRepository.findByCustomer(customer.get(), pageable);
 
-            if (allOrdersOfTheCustomer == null || allOrdersOfTheCustomer.size() == 0) {
+            if (allOrdersOfTheCustomer == null || allOrdersOfTheCustomer.getContent().size() == 0) {
                 log.warn("There is no order of the customer. Customer: {}", customer);
                 return Optional.empty();
             }
@@ -167,7 +169,7 @@ public class OrderService implements IOrderService {
             throw new ReadingIsGoodException("Error occurred while getting all orders of the customer.", exception);
         }
 
-        return Optional.of(allOrdersOfTheCustomer.stream().map(order -> OrderResponse.builder()
+        return Optional.of(allOrdersOfTheCustomer.getContent().stream().map(order -> OrderResponse.builder()
                 .customerId(order.getCustomer().getId())
                 .books(OrderResponse.generateBookOrderListFromMap(order.getBookOrder()))
                 .totalPrice(order.getTotalPrice())
