@@ -5,12 +5,9 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.time.LocalDate;
 
 @Configuration
 @SecurityScheme(
@@ -32,9 +29,10 @@ public class SpringSecurityConfiguration {
                 auth.requestMatchers(AUTH_WHITE_LIST).permitAll()
                         .anyRequest().authenticated().and().httpBasic();
             } catch (Exception e) {
-                throw new ReadingIsGoodException("", e);
+                throw new ReadingIsGoodException("Error occurred while authenticating.", e);
             }
         });
+
         httpSecurity.formLogin(Customizer.withDefaults());
 
         httpSecurity.csrf().disable();

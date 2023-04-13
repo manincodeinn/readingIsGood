@@ -2,8 +2,6 @@ package com.getir.readingIsGood.controller;
 
 import com.getir.readingIsGood.model.response.CustomerMonthlyStatisticsResponse;
 import com.getir.readingIsGood.service.IStatisticsService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,8 +3,6 @@ package com.getir.readingIsGood.controller;
 import com.getir.readingIsGood.model.request.OrderRequest;
 import com.getir.readingIsGood.model.response.OrderResponse;
 import com.getir.readingIsGood.service.IOrderService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
