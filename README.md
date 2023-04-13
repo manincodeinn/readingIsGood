@@ -29,7 +29,8 @@ ReadingIsGood is running as a backend service and tech component below was used 
 
 <hr />
 
-<h3>Run The Application</h3>
+<h3>Run The Application / Docker</h3>
+DockerHub repo: <code>https://hub.docker.com/r/manincodeinn/reading-is-good</code><br /><br />
 Execute command: <code>docker container run -d -p 8181:8181 manincodeinn/reading-is-good:0.0.1</code><br /><br />
 <i>
 Image will be pulled automatically then container will be run. The application will run on port 8181.</i>
