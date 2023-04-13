@@ -15,9 +15,9 @@ import com.getir.readingIsGood.service.IOrderService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -83,8 +83,7 @@ public class OrderService implements IOrderService {
 
             Order result = orderRepository.save(order);
 
-            final String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            log.info("New order was created by username: {}. Order info: {}", username, result);
+            log.info("New order was created by username: {}. Order info: {}", getUsername(), result);
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while creating new order.", exception);
         }
@@ -184,6 +183,11 @@ public class OrderService implements IOrderService {
                 .orderDateTime(order.getOrderDate())
                 .status(order.getStatus())
                 .build()).toList());
+    }
+
+    private String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null ? authentication.getName() : "";
     }
 
 }

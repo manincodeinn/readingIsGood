@@ -9,7 +9,6 @@ import com.getir.readingIsGood.service.ICustomerService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -45,8 +44,7 @@ public class CustomerService implements ICustomerService {
 
             Customer result = customerRepository.save(newCustomer);
 
-            final String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            log.info("New customer was created by username: {}. Customer info: {}", username, result);
+            log.info("New customer was created by username: {}. Customer info: {}", getUsername(), result);
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while creating new customer", exception);
         }
@@ -98,6 +96,11 @@ public class CustomerService implements ICustomerService {
         }
 
         return customer;
+    }
+
+    private String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null ? authentication.getName() : "";
     }
 
 }

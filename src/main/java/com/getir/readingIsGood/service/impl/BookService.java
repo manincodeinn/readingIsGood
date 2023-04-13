@@ -9,7 +9,7 @@ import com.getir.readingIsGood.service.IBookService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -44,8 +44,7 @@ public class BookService implements IBookService {
 
             Book result = bookRepository.save(newBook);
 
-            final String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            log.info("New book was created by username: {}. Book info: {}", username, result);
+            log.info("New book was created by username: {}. Book info: {}", getUsername(), result);
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while creating new book.", exception);
         }
@@ -97,8 +96,7 @@ public class BookService implements IBookService {
             book.get().setStockCount(stockCount);
             bookRepository.save(book.get());
 
-            final String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            log.info("Stock count of the book with id: {} was updated by username: {}", book.get().getId(), username);
+            log.info("Stock count of the book with id: {} was updated by username: {}", book.get().getId(), getUsername());
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while updating stock count.", exception);
         }
@@ -140,6 +138,11 @@ public class BookService implements IBookService {
         }
 
         return book;
+    }
+
+    private String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null ? authentication.getName() : "";
     }
 
 }
