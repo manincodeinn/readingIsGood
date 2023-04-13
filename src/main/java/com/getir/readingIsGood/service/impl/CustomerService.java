@@ -41,9 +41,9 @@ public class CustomerService implements ICustomerService {
                     .address(customerRequest.getAddress())
                     .build();
 
-            customerRepository.save(newCustomer);
+            Customer result = customerRepository.save(newCustomer);
 
-            log.info("New customer was created. {}", newCustomer);
+            log.info("New customer was created. {}", result);
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while creating new customer", exception);
         }
@@ -80,14 +80,14 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public Optional<Customer> getCustomerById(Long id) {
+    public Optional<Customer> getCustomerWithId(Long id) {
         Optional<Customer> customer;
 
         try {
             customer = customerRepository.findById(id);
 
             if (!customer.isPresent()) {
-                log.info("There is no customer with id: {}", id);
+                log.warn("There is no customer with id: {}", id);
                 return Optional.empty();
             }
         } catch (Exception exception) {

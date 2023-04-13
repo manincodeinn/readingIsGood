@@ -29,7 +29,6 @@ public class BookService implements IBookService {
             boolean isBookExist = bookRepository.existsByNameAndAuthor(bookRequest.getName(),
                     bookRequest.getAuthor());
 
-            // TODO book varsa price ve stock count guncelle
             if (isBookExist) {
                 log.warn("The book already exists. Name: {}, Author: {}", bookRequest.getName(), bookRequest.getAuthor());
                 return Optional.empty();
@@ -42,9 +41,9 @@ public class BookService implements IBookService {
                     .stockCount(bookRequest.getStockCount())
                     .build();
 
-            bookRepository.save(newBook);
+            Book result = bookRepository.save(newBook);
 
-            log.info("New book was created. {}", newBook);
+            log.info("New book was created. {}", result);
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while creating new book.", exception);
         }
@@ -123,14 +122,14 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public Optional<Book> getBookById(Long id) {
+    public Optional<Book> getBookWithId(Long id) {
         Optional<Book> book;
 
         try {
             book = bookRepository.findById(id);
 
             if (!book.isPresent()) {
-                log.info("There is no book with id: {}", id);
+                log.warn("There is no book with id: {}", id);
                 return Optional.empty();
             }
         } catch (Exception exception) {
@@ -139,7 +138,5 @@ public class BookService implements IBookService {
 
         return book;
     }
-
-    // TODO getAllBooks with paging
 
 }

@@ -13,6 +13,6 @@ public interface ICustomerService {
 
     Optional<CustomerResponse> getCustomer(Long id);
 
-    Optional<Customer> getCustomerById(Long id);
+    Optional<Customer> getCustomerWithId(Long id);
 
 }

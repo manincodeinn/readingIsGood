@@ -4,12 +4,16 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@Builder
+@NoArgsConstructor
 public class OrderRequest {
 
     @NotNull(message = "Customer ID cannot be null.")

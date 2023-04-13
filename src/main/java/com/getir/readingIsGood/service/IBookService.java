@@ -16,6 +16,6 @@ public interface IBookService {
 
     boolean isBookExistAndStockEnough(long id, int orderedStockCount);
 
-    Optional<Book> getBookById(Long id);
+    Optional<Book> getBookWithId(Long id);
 
 }

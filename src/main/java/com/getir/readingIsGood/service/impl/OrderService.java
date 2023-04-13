@@ -42,7 +42,7 @@ public class OrderService implements IOrderService {
         Order order;
 
         try {
-            Optional<Customer> customer = customerService.getCustomerById(orderRequest.getCustomerId());
+            Optional<Customer> customer = customerService.getCustomerWithId(orderRequest.getCustomerId());
 
             if (customer.isEmpty()) {
                 log.warn("There is no customer with id: {}", orderRequest.getCustomerId());
@@ -51,7 +51,7 @@ public class OrderService implements IOrderService {
 
             List<Optional<Book>> bookList = orderRequest.getBookInfo().stream()
                     .filter(bookOrder -> bookService.isBookExistAndStockEnough(bookOrder.getBookId(), bookOrder.getOrderCount()))
-                    .map(bookOrder -> bookService.getBookById(bookOrder.getBookId()))
+                    .map(bookOrder -> bookService.getBookWithId(bookOrder.getBookId()))
                     .toList();
 
             boolean allBookValid = bookList.stream().anyMatch(Optional::isPresent);
@@ -79,9 +79,9 @@ public class OrderService implements IOrderService {
                     .status(OrderStatus.RECEIVED)
                     .build();
 
-            orderRepository.save(order);
+            Order result = orderRepository.save(order);
 
-            log.info("New order was created. {}", order);
+            log.info("New order was created. {}", result);
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while creating new order.", exception);
         }
@@ -125,6 +125,11 @@ public class OrderService implements IOrderService {
 
     @Override
     public Optional<List<OrderResponse>> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable) {
+        if(startDateTime.isAfter(endDateTime)) {
+            log.warn("End date cannot be older than start date.");
+            return Optional.empty();
+        }
+
         List<Order> orderList;
 
         try {
@@ -152,7 +157,7 @@ public class OrderService implements IOrderService {
         Page<Order> allOrdersOfTheCustomer;
 
         try {
-            Optional<Customer> customer = customerService.getCustomerById(id);
+            Optional<Customer> customer = customerService.getCustomerWithId(id);
 
             if (customer.isEmpty()) {
                 log.warn("There is no customer with id: {}", id);

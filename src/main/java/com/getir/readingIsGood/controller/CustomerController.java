@@ -23,7 +23,7 @@ public class CustomerController {
 
     @PostMapping("/create-new-customer")
     public ResponseEntity<CustomerResponse> createNewCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
-        log.info("Create new customer request was received.");
+        log.info("Create new customer request was received. Parameters: {}", customerRequest);
 
         Optional<CustomerResponse> newCustomer = customerService.createNewCustomer(customerRequest);
 
@@ -33,6 +33,8 @@ public class CustomerController {
 
     @GetMapping("/get-customer")
     public ResponseEntity<CustomerResponse> getCustomer(@RequestParam @NotNull Long id) {
+        log.info("Get customer request was received with customer id: {}.", id);
+
         Optional<CustomerResponse> customer = customerService.getCustomer(id);
 
         return customer.map(customerResponse -> new ResponseEntity<>(customerResponse, HttpStatus.OK))

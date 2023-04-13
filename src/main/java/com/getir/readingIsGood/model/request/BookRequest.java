@@ -3,9 +3,15 @@ package com.getir.readingIsGood.model.request;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookRequest {
 
     @Size(min = 2, message = "Book name should have least 2 characters.")
