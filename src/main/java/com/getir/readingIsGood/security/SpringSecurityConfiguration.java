@@ -1,47 +1,43 @@
 package com.getir.readingIsGood.security;
 
+import com.getir.readingIsGood.model.exception.ReadingIsGoodException;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.function.Function;
+import java.time.LocalDate;
 
 @Configuration
+@SecurityScheme(
+        type = SecuritySchemeType.HTTP,
+        name = "basicAuth",
+        scheme = "basic")
 public class SpringSecurityConfiguration {
 
-    @Bean
-    public InMemoryUserDetailsManager createDetailsManager() {
-        Function<String, String> passwordEncoder = input -> passwordEncoder().encode(input);
-
-        UserDetails userDetails = User.builder()
-                .passwordEncoder(passwordEncoder)
-                .username("getir")
-                .password("getir")
-                .roles("USER", "ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private static final String[] AUTH_WHITE_LIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+        httpSecurity.authorizeHttpRequests(auth -> {
+            try {
+                auth.requestMatchers(AUTH_WHITE_LIST).permitAll()
+                        .anyRequest().authenticated().and().httpBasic();
+            } catch (Exception e) {
+                throw new ReadingIsGoodException("", e);
+            }
+        });
         httpSecurity.formLogin(Customizer.withDefaults());
 
         httpSecurity.csrf().disable();
-        httpSecurity.headers().frameOptions().disable();
 
         return httpSecurity.build();
     }

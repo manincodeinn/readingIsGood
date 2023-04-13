@@ -8,7 +8,7 @@ insert into CUSTOMER (ID, NAME, EMAIL, BIRTH_DATE, ADDRESS)
 values (10003, 'Cansu Yurtseven', 'cansu@gmail.com', CURRENT_DATE() - 1, 'Cayyolu Ankara');
 
 insert into CUSTOMER (ID, NAME, EMAIL, BIRTH_DATE, ADDRESS)
-values (10004, 'Çağrı Akyol', 'cagri@gmail.com', CURRENT_DATE() - 1, 'Merkez Denizli');
+values (10004, 'Merve Yurtseven', 'merve@gmail.com', CURRENT_DATE() - 1, 'Riga Latvia');
 
 insert into CUSTOMER (ID, NAME, EMAIL, BIRTH_DATE, ADDRESS)
 values (10005, 'İremnur Yurtseven', 'irem@gmail.com', CURRENT_DATE() - 1, 'Çekmeköy İstanbul');

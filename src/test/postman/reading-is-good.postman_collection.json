@@ -12,11 +12,26 @@
 				{
 					"name": "create-new-customer",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"ciyusdiary2@gmail.com\",\n    \"birthDate\": \"1994-04-12\",\n    \"address\": \"Cekmekoy Istanbul\"\n}",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test-user@gmail.com\",\n    \"birthDate\": \"1994-04-12\",\n    \"address\": \"Cekmekoy Istanbul\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -41,10 +56,25 @@
 				{
 					"name": "get-customer",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/customer/get-customer?id=10005",
+							"raw": "http://localhost:8181/customer/get-customer?id=10001",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -57,7 +87,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "10005"
+									"value": "10001"
 								}
 							]
 						}
@@ -72,11 +102,26 @@
 				{
 					"name": "create-new-book",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"asdasdasdadadasd\",\n    \"author\": \"Ahmet Ümit\",\n    \"price\": 55.4,\n    \"stockCount\": 85\n}",
+							"raw": "{\n    \"name\": \"Küçük Prens\",\n    \"author\": \"Antoine de Saint-Exupery\",\n    \"price\": 39.49,\n    \"stockCount\": 155\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -101,6 +146,21 @@
 				{
 					"name": "get-book",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -127,6 +187,21 @@
 				{
 					"name": "update-stock-count",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"url": {
@@ -162,11 +237,26 @@
 				{
 					"name": "create-new-order",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customerId\": 10005,\n    \"bookInfo\": [\n        {\n            \"bookId\": 20001,\n            \"orderCount\": 1\n        }, {\n            \"bookId\": 20004,\n            \"orderCount\": 1\n        }\n    ]\n}",
+							"raw": "{\n    \"customerId\": 10001,\n    \"bookInfo\": [\n        {\n            \"bookId\": 20001,\n            \"orderCount\": 1\n        }, {\n            \"bookId\": 20004,\n            \"orderCount\": 2\n        },\n        {\n            \"bookId\": 20002,\n            \"orderCount\": 5\n        }, {\n            \"bookId\": 20003,\n            \"orderCount\": 7\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -191,10 +281,25 @@
 				{
 					"name": "get-order",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/order/get-order",
+							"raw": "http://localhost:8181/order/get-order?id=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -203,6 +308,12 @@
 							"path": [
 								"order",
 								"get-order"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -211,6 +322,21 @@
 				{
 					"name": "get-orders-date-interval",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -245,10 +371,25 @@
 				{
 					"name": "get-all-orders-by-customer",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/order/get-all-orders-by-customer?customerId=10005&page=1",
+							"raw": "http://localhost:8181/order/get-all-orders-by-customer?customerId=10001&page=0",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -261,11 +402,11 @@
 							"query": [
 								{
 									"key": "customerId",
-									"value": "10005"
+									"value": "10001"
 								},
 								{
 									"key": "page",
-									"value": "1"
+									"value": "0"
 								}
 							]
 						}
@@ -280,10 +421,25 @@
 				{
 					"name": "get-customer-monthly-statistics",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "getir",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "getir",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8181/statistics/get-customer-monthly-statistics?id=10005",
+							"raw": "http://localhost:8181/statistics/get-customer-monthly-statistics?id=10001",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -296,7 +452,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "10005"
+									"value": "10001"
 								}
 							]
 						}
@@ -306,42 +462,23 @@
 			]
 		},
 		{
-			"name": "login",
+			"name": "test",
 			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "username",
-							"value": "getir",
-							"type": "text"
-						},
+				"auth": {
+					"type": "basic",
+					"basic": [
 						{
 							"key": "password",
 							"value": "getir",
-							"type": "text"
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "getir",
+							"type": "string"
 						}
 					]
 				},
-				"url": {
-					"raw": "http://localhost:8181/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8181",
-					"path": [
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "test",
-			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {

@@ -3,6 +3,9 @@ package com.getir.readingIsGood.controller;
 import com.getir.readingIsGood.model.request.OrderRequest;
 import com.getir.readingIsGood.model.response.OrderResponse;
 import com.getir.readingIsGood.service.IOrderService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/order")
+@SecurityRequirement(name = "basicAuth")
 public class OrderController {
 
     @Autowired
@@ -44,9 +48,9 @@ public class OrderController {
     }
 
     @GetMapping("/get-orders-date-interval")
-    public ResponseEntity<List<OrderResponse>> getOrdersDateInterval
-            (@RequestParam @NotNull LocalDateTime startDateTime, @RequestParam @NotNull LocalDateTime endDateTime
-                    , @PageableDefault(size = 15) Pageable pageable) {
+    public ResponseEntity<List<OrderResponse>> getOrdersDateInterval(@RequestParam @NotNull LocalDateTime startDateTime,
+                                                                     @RequestParam @NotNull LocalDateTime endDateTime,
+                                                                     @PageableDefault(size = 15) Pageable pageable) {
         Optional<List<OrderResponse>> ordersDateInterval =
                 orderService.getOrdersDateInterval(startDateTime, endDateTime, pageable);
 
@@ -55,9 +59,10 @@ public class OrderController {
     }
 
     @GetMapping("/get-all-orders-by-customer")
-    public ResponseEntity<List<OrderResponse>> getAllOrdersOfTheCustomer
-            (@RequestParam @NotNull Long customerId, @PageableDefault(size = 15) Pageable pageable) {
-        Optional<List<OrderResponse>> allOrdersOfTheCustomer = orderService.getAllOrdersOfTheCustomer(customerId, pageable);
+    public ResponseEntity<List<OrderResponse>> getAllOrdersOfTheCustomer(@RequestParam @NotNull Long customerId,
+                                                                         @PageableDefault(size = 15) Pageable pageable) {
+        Optional<List<OrderResponse>> allOrdersOfTheCustomer =
+                orderService.getAllOrdersOfTheCustomer(customerId, pageable);
 
         return allOrdersOfTheCustomer.map(orderResponses -> new ResponseEntity<>(orderResponses, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));

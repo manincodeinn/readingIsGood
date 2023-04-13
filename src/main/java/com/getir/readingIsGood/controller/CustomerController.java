@@ -3,6 +3,10 @@ package com.getir.readingIsGood.controller;
 import com.getir.readingIsGood.model.request.CustomerRequest;
 import com.getir.readingIsGood.model.response.CustomerResponse;
 import com.getir.readingIsGood.service.ICustomerService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +20,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/customer")
+@SecurityRequirement(name = "basicAuth")
 public class CustomerController {
 
     @Autowired

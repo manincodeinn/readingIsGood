@@ -8,8 +8,10 @@ import com.getir.readingIsGood.repository.ICustomerRepository;
 import com.getir.readingIsGood.service.ICustomerService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,7 +25,7 @@ public class CustomerService implements ICustomerService {
 
     @Transactional
     @Override
-    public Optional<CustomerResponse> createNewCustomer(CustomerRequest customerRequest) throws InvalidPropertyException {
+    public Optional<CustomerResponse> createNewCustomer(CustomerRequest customerRequest) {
         Customer newCustomer;
 
         try {
@@ -43,7 +45,8 @@ public class CustomerService implements ICustomerService {
 
             Customer result = customerRepository.save(newCustomer);
 
-            log.info("New customer was created. {}", result);
+            final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            log.info("New customer was created by username: {}. Customer info: {}", username, result);
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while creating new customer", exception);
         }

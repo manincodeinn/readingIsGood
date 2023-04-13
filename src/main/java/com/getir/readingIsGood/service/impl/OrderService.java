@@ -15,8 +15,10 @@ import com.getir.readingIsGood.service.IOrderService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -81,7 +83,8 @@ public class OrderService implements IOrderService {
 
             Order result = orderRepository.save(order);
 
-            log.info("New order was created. {}", result);
+            final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            log.info("New order was created by username: {}. Order info: {}", username, result);
         } catch (Exception exception) {
             throw new ReadingIsGoodException("Error occurred while creating new order.", exception);
         }
@@ -125,8 +128,8 @@ public class OrderService implements IOrderService {
 
     @Override
     public Optional<List<OrderResponse>> getOrdersDateInterval(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable) {
-        if(startDateTime.isAfter(endDateTime)) {
-            log.warn("End date cannot be older than start date.");
+        if (startDateTime.isAfter(endDateTime)) {
+            log.warn("Start date cannot be older than end date.");
             return Optional.empty();
         }
 

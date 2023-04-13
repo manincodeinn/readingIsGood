@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ICustomerService {
 
-    Optional<CustomerResponse> createNewCustomer(CustomerRequest customerRequest) throws InvalidPropertyException;
+    Optional<CustomerResponse> createNewCustomer(CustomerRequest customerRequest);
 
     Optional<CustomerResponse> getCustomer(Long id);
 

@@ -3,9 +3,11 @@ package com.getir.readingIsGood.controller;
 import com.getir.readingIsGood.model.request.BookRequest;
 import com.getir.readingIsGood.model.response.BookResponse;
 import com.getir.readingIsGood.service.IBookService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/book")
+@SecurityRequirement(name = "basicAuth")
 public class BookController {
 
     @Autowired
@@ -24,7 +27,7 @@ public class BookController {
 
     @PostMapping("/create-new-book")
     public ResponseEntity<BookResponse> createNewBook(@Valid @RequestBody BookRequest bookRequest) {
-        log.info("Create new book request was received.");
+        log.info("Create new book request was received. Parameters: {}", bookRequest);
 
         Optional<BookResponse> newBook = bookService.createNewBook(bookRequest);
 

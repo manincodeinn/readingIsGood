@@ -2,6 +2,9 @@ package com.getir.readingIsGood.controller;
 
 import com.getir.readingIsGood.model.response.CustomerMonthlyStatisticsResponse;
 import com.getir.readingIsGood.service.IStatisticsService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/statistics")
+@SecurityRequirement(name = "basicAuth")
 public class StatisticsController {
 
     @Autowired
@@ -26,8 +30,7 @@ public class StatisticsController {
         Optional<List<CustomerMonthlyStatisticsResponse>> customerMonthlyStatistics =
                 statisticsService.getCustomerMonthlyStatistics(id);
 
-        return customerMonthlyStatistics
-                .map(customerMonthlyStatisticsResponses ->
+        return customerMonthlyStatistics.map(customerMonthlyStatisticsResponses ->
                         new ResponseEntity<>(customerMonthlyStatisticsResponses, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
